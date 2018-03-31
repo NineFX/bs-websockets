@@ -1,6 +1,7 @@
 
 lib
 .merlin
+.bsb.lock
 
 # Created by https://www.gitignore.io/api/code,node
 
