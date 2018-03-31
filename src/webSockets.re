@@ -5,8 +5,8 @@ module MessageEvent = {
   [@bs.get] external stringData : t => string = "data";
   [@bs.get] external origin : t => string = "";
   [@bs.get] external lastEventId : t => string = "";
-  [@bs.get] external source : t => Js.t({.}) = "";
-  [@bs.get] external ports : t => array (Js.t({.})) = "";
+  [@bs.get] external source : t => Js.t({..}) = "";
+  [@bs.get] external ports : t => array (Js.t({..})) = "";
 };
 
 module CloseEvent = {
@@ -53,7 +53,7 @@ module MakeWebSocket (Maker: WebSocketMaker) {
     | Error (string => unit)
     | Message (MessageEvent.t => unit)
     | Open (unit => unit);
-  [@bs.send.pipe : t] external _on : string => (Js.t({.}) => unit) => unit = "addEventListener";
+  [@bs.send.pipe : t] external _on : string => (Js.t({..}) => unit) => unit = "addEventListener";
   let on = (e, t) => {
     let evtname =
       switch e {
@@ -64,10 +64,10 @@ module MakeWebSocket (Maker: WebSocketMaker) {
       };
     _on(
       evtname,
-      ((jsobj: Js.t({.})) =>
+      ((jsobj: Js.t({..})) =>
           switch e {
           | Close(fn) => fn(Obj.magic(jsobj))
-          | Error(fn) => fn(Obj.magic(jsobj))
+          | Error(fn) => fn(jsobj##message)
           | Message(fn) => fn(Obj.magic(jsobj))
           | Open(fn) => fn()
           }
