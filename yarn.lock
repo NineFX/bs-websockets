@@ -5,11 +5,3 @@
 bs-platform@^2.2.3:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-2.2.3.tgz#d905ae10a5f3621e6a739041dfa0b58483a2174f"
-
-reason-cli@^3.1.0-darwin:
-  version "3.1.0-darwin"
-  resolved "https://registry.yarnpkg.com/reason-cli/-/reason-cli-3.1.0-darwin.tgz#88c32e6599f40a9fa94db29f9f182a37bff657d4"
-
-refmt@^1.13.7-1:
-  version "1.13.7-1"
-  resolved "https://registry.yarnpkg.com/refmt/-/refmt-1.13.7-1.tgz#c3159bcaf23b20cf2dc86cb161570792f62d1481"
