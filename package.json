@@ -13,6 +13,6 @@
   "author": "CHEN Xian-an <xianan.chen@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "bs-platform": "^2.2.3"
+    "bs-platform": "7.1.0"
   }
 }

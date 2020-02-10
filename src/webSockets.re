@@ -1,19 +1,19 @@
 module MessageEvent = {
   type t;
-  [@bs.get] external data : t => 'a = "";
+  [@bs.get] external data : t => 'a = "data";
   [@bs.get] external arrayBufferData : t => Js.Typed_array.array_buffer = "data";
   [@bs.get] external stringData : t => string = "data";
-  [@bs.get] external origin : t => string = "";
-  [@bs.get] external lastEventId : t => string = "";
-  [@bs.get] external source : t => Js.t({..}) = "";
-  [@bs.get] external ports : t => array (Js.t({..})) = "";
+  [@bs.get] external origin : t => string = "origin";
+  [@bs.get] external lastEventId : t => string = "lastEventId";
+  [@bs.get] external source : t => Js.t({..}) = "source";
+  [@bs.get] external ports : t => array (Js.t({..})) = "ports";
 };
 
 module CloseEvent = {
   type t;
-  [@bs.get] external code : t => int = "";
-  [@bs.get] external reason : t => string = "";
-  [@bs.get] external wasClean : t => bool = "";
+  [@bs.get] external code : t => int = "code";
+  [@bs.get] external reason : t => string = "reason";
+  [@bs.get] external wasClean : t => bool = "wasClean";
 };
 
 module type WebSocketMaker = {
@@ -46,8 +46,8 @@ module MakeWebSocket (Maker: WebSocketMaker) {
     _setBinaryType(t, typestr);
     t
   };
-  [@bs.get] external bufferedAmount : t => int64 = "";
-  [@bs.get] external extensions : t => 'a = "";
+  [@bs.get] external bufferedAmount : t => int64 = "bufferedAmount";
+  [@bs.get] external extensions : t => 'a = "extensions";
   type event =
     | Close (CloseEvent.t => unit)
     | Error (string => unit)
@@ -75,7 +75,7 @@ module MakeWebSocket (Maker: WebSocketMaker) {
       t);
     t
   };
-  [@bs.get] external protocol : t => string = "";
+  [@bs.get] external protocol : t => string = "protocol";
   type readyState =
     | Connecting
     | Open
@@ -89,8 +89,8 @@ module MakeWebSocket (Maker: WebSocketMaker) {
     | 2 => Closing
     | _ => Closed
     };
-  [@bs.get] external url : t => string = "";
-  [@bs.send.pipe : t] external close : unit => unit = "";
+  [@bs.get] external url : t => string = "url";
+  [@bs.send.pipe : t] external close : unit => unit = "close";
   [@bs.send.pipe : t]external closeWithCode : int => unit = "close";
   [@bs.send.pipe : t]external closeWithReason : string => unit = "close";
   [@bs.send.pipe : t]external closeWithCodeAndReason : int => string => unit = "close";
