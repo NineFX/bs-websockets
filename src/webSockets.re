@@ -48,8 +48,52 @@ module MakeWebSocket (Maker: WebSocketMaker) {
   };
   [@bs.get] external bufferedAmount : t => int64 = "bufferedAmount";
   [@bs.get] external extensions : t => 'a = "extensions";
+  module OnClose {
+    type exitReason =
+      | Normal // 1000
+      | GoingAway // 1001
+      | ProtocolError // 1002
+      | UnsupportedData // 1003
+      | NoStatus // 1005
+      | AbnormalClosure // 1006
+      | InvalidFrame // 1007
+      | PolicyViolation // 1008
+      | MessageTooLarge // 1009
+      | MissingExtension // 1010
+      | InternalError // 1011
+      | ServiceRestart // 1012
+      | TryAgainLater // 1013
+      | BadGateway // 1014
+      | TLSHandshakeFailure // 1015
+      | UndefinedError // *
+    ;
+    let exitCodeToReason = exitCode =>
+      switch (exitCode) {
+        | 1000 => Normal
+        | 1001 => GoingAway
+        | 1002 => ProtocolError
+        | 1003 => UnsupportedData
+        | 1005 => NoStatus
+        | 1006 => AbnormalClosure
+        | 1007 => InvalidFrame
+        | 1008 => PolicyViolation
+        | 1009 => MessageTooLarge
+        | 1010 => MissingExtension
+        | 1011 => InternalError
+        | 1012 => ServiceRestart
+        | 1013 => TryAgainLater
+        | 1014 => BadGateway
+        | 1015 => TLSHandshakeFailure
+        | _ => UndefinedError
+      };
+    type closingEvent = (CloseEvent.t, exitReason) => unit;
+    // This enforces that the closing code is handled by our close connection
+    // Can add more transformations to throw an exception.
+    let closingTransform: closingEvent => (CloseEvent.t => unit) = closingFx => 
+        (closeEvent) => closingFx(closeEvent, CloseEvent.code(closeEvent) |> exitCodeToReason);
+  }
   type event =
-    | Close (CloseEvent.t => unit)
+    | Close (OnClose.closingEvent)
     | Error (string => unit)
     | Message (MessageEvent.t => unit)
     | Open (unit => unit);
@@ -66,7 +110,7 @@ module MakeWebSocket (Maker: WebSocketMaker) {
       evtname,
       ((jsobj: Js.t({..})) =>
           switch e {
-          | Close(fn) => fn(Obj.magic(jsobj))
+          | Close(fn) => OnClose.closingTransform(fn)(Obj.magic(jsobj))
           | Error(fn) => fn(jsobj##message)
           | Message(fn) => fn(Obj.magic(jsobj))
           | Open(fn) => fn()
